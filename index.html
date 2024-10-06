@@ -8,14 +8,73 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
     <link rel="stylesheet" href="ChatButtonStyle.css">
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
         #map {
-            height: 100vh; /* Full screen height */
+            height: calc(100vh - 80px); /* Full screen height minus header and footer */
             width: 100%;
+        }
+
+        /* Header and Footer Styling */
+        .header-bar, .footer-bar {
+            background-color: #28a745; /* Green color */
+            color: white;
+            padding: 8px;
+            position: fixed;
+            width: 100%;
+            z-index: 1001;
+        }
+        .header-bar {
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-left: 20px; /* Added margin to move logo away from the edge */
+        }
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            margin-right: 20px; /* Added margin to move buttons away from the edge */
+        }
+        .header-buttons a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 16px;
+            background-color: #006400;
+            border-radius: 5px;
+        }
+        .footer-bar {
+            bottom: 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div class="logo">MyLogo</div>
+        <div class="header-buttons">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+        </div>
+    </div>
+
     <div id="map"></div>
+
+    <!-- Footer Bar -->
+    <div class="footer-bar">
+        &copy; 2024 Farmalytics. All rights reserved.
+    </div>
 
     <!-- Chatbox icon and chatbox -->
     <div class="chatbox-icon" id="chatbox-icon">💬</div>
@@ -184,5 +243,6 @@
             }
         }
     </script>
+    
 </body>
 </html>
