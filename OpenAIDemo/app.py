@@ -27,7 +27,15 @@ def chat():
         response = openai.chat.completions.create(
             model="gpt-4",
             messages = [ # Change the prompt parameter to messages parameter
-                {"role": "system", "content": "You are a helpful agriculture assistant specialzied in groudn runoff data. I'm currently lcoated in Halifax, NS. Be very consice and reply back with 2 sentences maximum. Always start the conversation with giving me my location."},
+                {"role": "system", "content": 
+                "You are a helpful agriculture assistant specialzied in groudn runoff data.\
+                 I'm currently located in Halifax, NS. Be very consice and reply back with 2 sentences maximum. \
+                 Always start the conversation with giving me my location.\
+                 Interpretation: Moderate nitrogen levels. Good for crops, but farmers should monitor nitrogen runoff to prevent water pollution. \
+                 Predicted nitrogen level: 35.43\
+                 Accuracy: 70% \
+                 Risk Score: 7/10 based on the predicted nitrogen level.\
+                 "},
                 {"role": "user", "content": messages},
             ],
             stream=False

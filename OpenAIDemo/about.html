@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Header and Footer Styling */
+        .header-bar, .footer-bar {
+            background-color: #28a745; /* Green color */
+            color: white;
+            padding: 8px;
+            position: fixed;
+            width: 100%;
+            z-index: 1001;
+        }
+        .header-bar {
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-left: 20px; /* Added margin to move logo away from the edge */
+        }
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            margin-right: 20px; /* Added margin to move buttons away from the edge */
+        }
+        .header-buttons a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 16px;
+            background-color: #006400;
+            border-radius: 5px;
+        }
+        .footer-bar {
+            bottom: 0;
+            text-align: center;
+        }
+        
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 100px auto 60px auto; /* Adjusted to accommodate header and footer */
+        }
+        h1 {
+            text-align: center;
+        }
+        .team-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .team-member {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div class="logo">FARMALYTICS</div>
+        <div class="header-buttons">
+            <a href="indexChatDemo.html">Home</a>
+            <a href="about.html">About</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>WHAT WE DO?</h1>
+        <p>This application provides a comprehensive tool to visualize geospatial data using an interactive map. You can draw polygons, view different map layers, and interact with the groundwater runoff data provided in GeoJSON format. Our goal is to make data visualization and geospatial analysis accessible and intuitive for all users.</p>
+
+        <div class="team-section">
+            <h2>Our Team</h2>
+            <div class="team-member">
+                <p><a href="https://www.linkedin.com/in/anandlo/">Ahmad Kammonah</a></p>
+            </div>
+            <div class="team-member">
+                <p><a href="https://www.linkedin.com/in/anandlo/">Anand Lo</a></p>
+            </div>
+            <div class="team-member">
+                <p><a href="https://www.linkedin.com/in/het-jivani-851803276/">Het Jivani</a></p>
+            </div>
+            <div class="team-member">
+                <p><a href="https://www.linkedin.com/in/joy-liu-013121196/">Joy Liu</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Bar -->
+    <div class="footer-bar">
+        &copy; 2024 Farmalytics. All rights reserved.
+    </div>
+</body>
+</html>

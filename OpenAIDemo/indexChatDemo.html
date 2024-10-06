@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map with Popup Chatbox</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+    <link rel="stylesheet" href="ChatButtonStyle.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        #map {
+            height: calc(100vh - 80px); /* Full screen height minus header and footer */
+            width: 100%;
+        }
+
+        /* Header and Footer Styling */
+        .header-bar, .footer-bar {
+            background-color: #28a745; /* Green color */
+            color: white;
+            padding: 8px;
+            position: fixed;
+            width: 100%;
+            z-index: 1001;
+        }
+        .header-bar {
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-left: 20px; /* Added margin to move logo away from the edge */
+        }
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            margin-right: 20px; /* Added margin to move buttons away from the edge */
+        }
+        .header-buttons a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 16px;
+            background-color: #006400;
+            border-radius: 5px;
+        }
+        .footer-bar {
+            bottom: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Bar -->
+    <div class="header-bar">
+        <div class="logo">FARMALYTICS</div>
+        <div class="header-buttons">
+            <a href="indexChatDemo.html">Home</a>
+            <a href="about.html">About</a>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Footer Bar -->
+    <div class="footer-bar">
+        &copy; 2024 Farmalytics. All rights reserved.
+    </div>
+
+    <!-- Chatbox icon and chatbox -->
+    <div class="chatbox-icon" id="chatbox-icon">💬</div>
+    <div class="chatbox" id="chatbox">
+        <div class="chatbox-header">Data Helper</div>
+        <div class="chatbox-body" id="chatbox-body">
+            <!-- Messages will be appended here -->
+        </div>
+        <div class="chatbox-footer">
+            <input type="text" id="chat-input" placeholder="Give me tips on decreasing runoff.">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <!-- Leaflet and other map scripts -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+    <script src="ChatButtonScript.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([44.6488, -63.5752], 13);
+
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        var satellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            attribution: '&copy; Google',
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
+        var topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://opentopomap.org">OpenTopoMap</a> contributors'
+        });
+
+        satellite.addTo(map);
+
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "Satellite": satellite,
+            "Topographic": topo
+        };
+
+        var editableLayers = new L.FeatureGroup();
+        map.addLayer(editableLayers);
+
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: editableLayers,
+                remove: true
+            },
+            draw: {
+                polygon: true,
+                polyline: false,
+                rectangle: false,
+                circle: false,
+                marker: false,
+                circlemarker: false
+            }
+        });
+        map.addControl(drawControl);
+
+        map.on('draw:created', function (e) {
+            var layer = e.layer;
+            editableLayers.addLayer(layer);
+
+            if (e.layerType === 'polygon') {
+                console.log('Polygon coordinates:', layer.getLatLngs());
+            }
+        });
+
+        map.locate({setView: true, maxZoom: 16});
+
+        map.on('locationfound', function (e) {
+            map.setView(e.latlng, 16);
+        });
+
+        map.on('locationerror', function () {
+            alert("Location access denied.");
+        });
+
+        fetch('../OutputData/output_tiff_data.geojson')
+            .then(response => response.json())
+            .then(data => {
+                var geoJsonLayer = L.geoJSON(data, {
+                    style: function (feature) {
+                        var value = feature.properties.value;
+                        var fillColor;
+                        if (value < 0.01) {
+                            fillColor = '#ffffcc';
+                        } else if (value < 0.02) {
+                            fillColor = '#ffeda0';
+                        } else if (value < 0.05) {
+                            fillColor = '#fed976';
+                        } else if (value < 0.1) {
+                            fillColor = '#feb24c';
+                        } else if (value < 0.2) {
+                            fillColor = '#fd8d3c';
+                        } else if (value < 0.5) {
+                            fillColor = '#fc4e2a';
+                        } else if (value < 1) {
+                            fillColor = '#e31a1c';
+                        } else {
+                            fillColor = '#b10026';
+                        }
+                        return {
+                            color: "#ff7800",
+                            weight: 1,
+                            opacity: 0.6,
+                            fillColor: fillColor,
+                            fillOpacity: 0.8
+                        };
+                    },
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties && feature.properties.value) {
+                            layer.bindPopup('Value: ' + feature.properties.value);
+                        }
+                    }
+                });
+
+                var overlayMaps = {
+                    "Ground Water Runoff": geoJsonLayer
+                };
+
+                L.control.layers(baseMaps, overlayMaps).addTo(map);
+            })
+            .catch(error => console.error('Error loading GeoJSON:', error));
+    </script>
+</body>
+</html>
