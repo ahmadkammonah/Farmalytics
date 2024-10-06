@@ -141,18 +141,21 @@
             })
             .catch(error => console.error('Error loading GeoJSON:', error));
     </script>
-<div id="legend" style="background: white; padding: 5px; position: fixed; top: 20%; right: 0; z-index: 1000; font-size: 12px; border: 1px solid #ccc; border-radius: 5px; width: 200px; transition: transform 0.3s; transform: translateX(100%);">
+    
+<div id="legend" style="background: white; padding: 10px; position: fixed; top: 20%; right: 0; z-index: 1000; font-size: 12px; border: 1px solid #ccc; border-radius: 5px; width: 240px; transition: transform 0.3s; transform: translateX(100%);">
         <button onclick="toggleLegend()" style="position: absolute; left: -35px; top: 10px; transform: rotate(-90deg); background: #ccc; border: none; padding: 5px; cursor: pointer;">Legend</button>
-        <h4>Legend (Baseflow-Groundwater Runoff in kg/m² per 3-hour)</h4>
-        <i style="background: #ffffcc; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>&lt; 0.01</span><br>
-        <i style="background: #ffeda0; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.01 - 0.02</span><br>
-        <i style="background: #fed976; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.02 - 0.05</span><br>
-        <i style="background: #feb24c; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.05 - 0.1</span><br>
-        <i style="background: #fd8d3c; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.1 - 0.2</span><br>
-        <i style="background: #fc4e2a; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.2 - 0.5</span><br>
-        <i style="background: #e31a1c; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.5 - 1</span><br>
-        <i style="background: #b10026; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>&gt; 1</span>
-    </div>
+        <h4 style="text-align: center; margin-top: 0;">Groundwater Runoff in kg/m² per 3-hour</h4>
+        <div style="display: flex; flex-wrap: wrap;">
+            <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #ffffcc; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>&lt; 0.01</span></div>
+            <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #ffeda0; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>0.01 - 0.02</span></div>
+            <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #fed976; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>0.02 - 0.05</span></div>
+            <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #feb24c; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>0.05 - 0.1</span></div>
+            <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #fd8d3c; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>0.1 - 0.2</span></div>
+            <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #fc4e2a; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>0.2 - 0.5</span></div>
+            <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #e31a1c; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>0.5 - 1</span></div>
+            <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #b10026; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>&gt; 1</span></div>
+        </div>
+    
 <script>
         function toggleLegend() {
             var legend = document.getElementById('legend');
