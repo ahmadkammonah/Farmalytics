@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Map Page</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
     <style>
         #map {
             height: 100vh; /* Full screen height */
@@ -16,8 +17,9 @@
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
     <script>
-        // Initialize the map and set its view to a geographical point and zoom level
+        // Initialize the map
         var map = L.map('map').setView([44.6488, -63.5752], 13);
 
         // Define different map layer options
@@ -44,12 +46,122 @@
             "Topographic": topo
         };
 
-        L.control.layers(baseMaps).addTo(map);
+        // Feature group to store editable layers
+        var editableLayers = new L.FeatureGroup();
+        map.addLayer(editableLayers);
 
-        // Add a marker to the map
-        L.marker([44.6488, -63.5752]).addTo(map)
-            .bindPopup('Halifax, NS')
-            .openPopup();
+        // Add Leaflet Draw Control to the map
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: editableLayers,
+                remove: true
+            },
+            draw: {
+                polygon: true,
+                polyline: false,
+                rectangle: false,
+                circle: false,
+                marker: false,
+                circlemarker: false
+            }
+        });
+        map.addControl(drawControl);
+
+        // Handle the creation of new layers (e.g., polygons)
+        map.on('draw:created', function (e) {
+            var layer = e.layer;
+            editableLayers.addLayer(layer);
+
+            // Log the coordinates of the drawn polygon
+            if (e.layerType === 'polygon') {
+                console.log('Polygon coordinates:', layer.getLatLngs());
+            }
+        });
+
+        // Detect user's location and set the map view
+        map.locate({setView: true, maxZoom: 16});
+
+        // Handle location found
+        map.on('locationfound', function (e) {
+            map.setView(e.latlng, 16);
+        });
+
+        // Handle location error
+        map.on('locationerror', function () {
+            alert("Location access denied.");
+        });
+
+        // Load GeoJSON data and add it as polygons to the map
+        fetch('OutputData/output_tiff_data.geojson')
+            .then(response => response.json())
+            .then(data => {
+                var geoJsonLayer = L.geoJSON(data, {
+                    style: function (feature) {
+                        var value = feature.properties.value;
+                        var fillColor;
+                        if (value < 0.01) {
+                            fillColor = '#ffffcc';
+                        } else if (value < 0.02) {
+                            fillColor = '#ffeda0';
+                        } else if (value < 0.05) {
+                            fillColor = '#fed976';
+                        } else if (value < 0.1) {
+                            fillColor = '#feb24c';
+                        } else if (value < 0.2) {
+                            fillColor = '#fd8d3c';
+                        } else if (value < 0.5) {
+                            fillColor = '#fc4e2a';
+                        } else if (value < 1) {
+                            fillColor = '#e31a1c';
+                        } else {
+                            fillColor = '#b10026';
+                        }
+                        return {
+                            color: "#ff7800",
+                            weight: 1,
+                            opacity: 0.6,
+                            fillColor: fillColor,
+                            fillOpacity: 0.8
+                        };
+                    }, // Correct placement of the comma
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties && feature.properties.value) {
+                            layer.bindPopup('Value: ' + feature.properties.value);
+                        }
+                    }
+                }).addTo(map);
+
+
+                // Add the GeoJSON layer to the layer control as an overlay
+                var overlayMaps = {
+                    "GeoJSON Overlay": geoJsonLayer
+                };
+
+                L.control.layers(baseMaps, overlayMaps).addTo(map);
+            })
+            .catch(error => console.error('Error loading GeoJSON:', error));
+    </script>
+<div id="legend" style="background: white; padding: 5px; position: fixed; top: 20%; right: 0; z-index: 1000; font-size: 12px; border: 1px solid #ccc; border-radius: 5px; width: 200px; transition: transform 0.3s; transform: translateX(100%);">
+        <button onclick="toggleLegend()" style="position: absolute; left: -35px; top: 10px; transform: rotate(-90deg); background: #ccc; border: none; padding: 5px; cursor: pointer;">Legend</button>
+        <h4>Legend (Baseflow-Groundwater Runoff in kg/m² per 3-hour)</h4>
+        <i style="background: #ffffcc; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>&lt; 0.01</span><br>
+        <i style="background: #ffeda0; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.01 - 0.02</span><br>
+        <i style="background: #fed976; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.02 - 0.05</span><br>
+        <i style="background: #feb24c; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.05 - 0.1</span><br>
+        <i style="background: #fd8d3c; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.1 - 0.2</span><br>
+        <i style="background: #fc4e2a; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.2 - 0.5</span><br>
+        <i style="background: #e31a1c; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>0.5 - 1</span><br>
+        <i style="background: #b10026; width: 18px; height: 18px; float: left; margin-right: 8px;"></i><span>&gt; 1</span>
+    </div>
+<script>
+        function toggleLegend() {
+            var legend = document.getElementById('legend');
+            if (legend.style.transform === 'translateX(100%)') {
+                legend.style.transform = 'translateX(0)';
+            } else {
+                legend.style.transform = 'translateX(100%)';
+            }
+        }
     </script>
 </body>
 </html>
