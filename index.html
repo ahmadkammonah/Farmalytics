@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Map Page</title>
+    <title>Map with Popup Chatbox</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css" />
+    <link rel="stylesheet" href="ChatButtonStyle.css">
     <style>
         #map {
             height: 100vh; /* Full screen height */
@@ -16,8 +17,23 @@
 <body>
     <div id="map"></div>
 
+    <!-- Chatbox icon and chatbox -->
+    <div class="chatbox-icon" id="chatbox-icon">💬</div>
+    <div class="chatbox" id="chatbox">
+        <div class="chatbox-header">Data Helper</div>
+        <div class="chatbox-body" id="chatbox-body">
+            <!-- Messages will be appended here -->
+        </div>
+        <div class="chatbox-footer">
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <!-- Leaflet and other map scripts -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+    <script src="ChatButtonScript.js"></script>
     <script>
         // Initialize the map
         var map = L.map('map').setView([44.6488, -63.5752], 13);
@@ -123,14 +139,13 @@
                             fillColor: fillColor,
                             fillOpacity: 0.8
                         };
-                    }, // Correct placement of the comma
+                    },
                     onEachFeature: function (feature, layer) {
                         if (feature.properties && feature.properties.value) {
                             layer.bindPopup('Value: ' + feature.properties.value);
                         }
                     }
                 }).addTo(map);
-
 
                 // Add the GeoJSON layer to the layer control as an overlay
                 var overlayMaps = {
@@ -141,8 +156,9 @@
             })
             .catch(error => console.error('Error loading GeoJSON:', error));
     </script>
-    
-<div id="legend" style="background: white; padding: 10px; position: fixed; top: 20%; right: 0; z-index: 1000; font-size: 12px; border: 1px solid #ccc; border-radius: 5px; width: 240px; transition: transform 0.3s; transform: translateX(100%);">
+
+    <!-- Legend for map data -->
+    <div id="legend" style="background: white; padding: 10px; position: fixed; top: 20%; right: 0; z-index: 1000; font-size: 12px; border: 1px solid #ccc; border-radius: 5px; width: 240px; transition: transform 0.3s; transform: translateX(100%);">
         <button onclick="toggleLegend()" style="position: absolute; left: -35px; top: 10px; transform: rotate(-90deg); background: #ccc; border: none; padding: 5px; cursor: pointer;">Legend</button>
         <h4 style="text-align: center; margin-top: 0;">Groundwater Runoff in kg/m² per 3-hour</h4>
         <div style="display: flex; flex-wrap: wrap;">
@@ -155,8 +171,10 @@
             <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #e31a1c; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>0.5 - 1</span></div>
             <div style="flex: 1 0 50%; display: flex; align-items: center; margin-bottom: 5px;"><i style="background: #b10026; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #000;"></i><span>&gt; 1</span></div>
         </div>
-    
-<script>
+    </div>
+
+    <!-- Legend toggle script -->
+    <script>
         function toggleLegend() {
             var legend = document.getElementById('legend');
             if (legend.style.transform === 'translateX(100%)') {
