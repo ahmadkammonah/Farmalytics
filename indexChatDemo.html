@@ -155,6 +155,51 @@
                 L.control.layers(baseMaps, overlayMaps).addTo(map);
             })
             .catch(error => console.error('Error loading GeoJSON:', error));
+
+        // Chatbox functionality
+        document.getElementById('chatbox-icon').addEventListener('click', function () {
+            var chatbox = document.getElementById('chatbox');
+            if (chatbox.style.display === 'none' || chatbox.style.display === '') {
+                chatbox.style.display = 'block';
+            } else {
+                chatbox.style.display = 'none';
+            }
+        });
+
+        document.getElementById('send-btn').addEventListener('click', function() {
+            var chatInput = document.getElementById('chat-input');
+            var message = chatInput.value;
+            if (message.trim() !== '') {
+                // User message (left side)
+                var chatContent = document.getElementById('chatbox-body');
+                var userMessageDiv = document.createElement('div');
+                userMessageDiv.style.marginBottom = '10px';
+                userMessageDiv.style.textAlign = 'left';
+                userMessageDiv.innerHTML = `<div style="background: #f1f1f1; display: inline-block; padding: 8px 12px; border-radius: 15px; max-width: 80%;">${message}</div>`;
+                chatContent.appendChild(userMessageDiv);
+
+                // Send message to Flask server
+                fetch('http://localhost:5000/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Bot response (right side)
+                    var botMessageDiv = document.createElement('div');
+                    botMessageDiv.style.marginBottom = '10px';
+                    botMessageDiv.style.textAlign = 'right';
+                    botMessageDiv.innerHTML = `<div style="background: #007bff; color: white; display: inline-block; padding: 8px 12px; border-radius: 15px; max-width: 80%;">${data.response}</div>`;
+                    chatContent.appendChild(botMessageDiv);
+                    chatInput.value = '';
+                    chatContent.scrollTop = chatContent.scrollHeight;
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
     </script>
 
     <!-- Legend for map data -->
