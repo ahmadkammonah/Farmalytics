@@ -1,0 +1,128 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.chatbox {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    z-index: 1000;
+    transform: translateY(200%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.chatbox.active {
+    transform: translateY(-15%);
+}
+
+.chatbox-header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.chatbox-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatbox-body .message {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.chatbox-body .message.user {
+    justify-content: flex-end;
+}
+
+.chatbox-body .message.bot {
+    justify-content: flex-start;
+}
+
+.message-content {
+    max-width: 70%;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.message.user .message-content {
+    background-color: #007bff;
+    color: white;
+}
+
+.message.bot .message-content {
+    background-color: #e4e4e4;
+    color: #333;
+}
+
+.chatbox-footer {
+    padding: 10px;
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+.chatbox-footer input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.chatbox-footer button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    margin-left: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.chatbox-footer button:hover {
+    background-color: #0056b3;
+}
+
+/* Chat Icon */
+.chatbox-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.chatbox-icon:hover {
+    background-color: #0056b3;
+}
